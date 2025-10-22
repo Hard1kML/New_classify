@@ -1,0 +1,10 @@
+FROM python:3.13-slim
+
+WORKDIR /app 
+
+COPY requestments.txt.
+RUN pip install --ni--cache-dir -r requirements.txt 
+
+COPY . . 
+
+CMD["streamlit", "run", "frontend.py", "--server.port=8501", "--server.address=0.0.0.0"]
