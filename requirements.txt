@@ -49,4 +49,7 @@ typing-inspection==0.4.1
 typing_extensions==4.14.0
 tzdata==2025.2
 urllib3==2.4.0
-uvicorn==0.34.3
+uvicorn==0.34.3 
+transformers==4.56.1 
+torch==2.9.0 
+path==17.1.1
