@@ -2,3 +2,6 @@ src/backend/models/bert/model.safetensors filter=lfs diff=lfs merge=lfs -text
 *.safetensors filter=lfs diff=lfs merge=lfs -text
 src/backend/models/bert/model.onnx.data filter=lfs diff=lfs merge=lfs -text
 src/backend/models/bert/bert_ts.pt filter=lfs diff=lfs merge=lfs -text
+src/backend/models/bert/*.onnx.data filter=lfs diff=lfs merge=lfs -text
+src/backend/models/bert/*.pt filter=lfs diff=lfs merge=lfs -text
+src/backend/models/bert/model.safetensors filter=lfs diff=lfs merge=lfs -text
