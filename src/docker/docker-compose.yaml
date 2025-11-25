@@ -1,4 +1,3 @@
-version: '3.13'
 
 services:
   postgres:
@@ -16,11 +15,11 @@ services:
       test: ["CMD-SHELL", "pg_isready -U comclassify_user -d comclassify"]
       interval: 10s
       timeout: 5s
-      retries: 5 
+      retries: 5
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ../..
+      dockerfile: src/docker/Dockerfile.backend
     container_name: comclassify_backend
     ports:
       - "8000:8000"
@@ -32,8 +31,8 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ../..
+      dockerfile: src/docker/Dockerfile.frontend
     container_name: comclassify_frontend
     ports:
       - "8501:8501"

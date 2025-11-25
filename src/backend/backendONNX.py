@@ -8,31 +8,37 @@ from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
 from transformers import AutoTokenizer
 import onnxruntime as ort
-from database import Prediction, SessionLocal, init_db
+from src.backend.database import Prediction, SessionLocal, init_db
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-# =========================
+
 # Настройка логирования
-# =========================
+
 logging.basicConfig(level=logging.INFO)
 logging.info("Starting FastAPI application")
 
-# =========================
 # Пути и константы
-# =========================
-MODEL_PATH = Path(r"C:\Users\ser9e\New_classify\src\backend\models\bert")
+
+from pathlib import Path
+
+# Папка backend
+BASE_DIR = Path(__file__).resolve().parent
+
+# Папка models внутри backend
+MODEL_PATH = BASE_DIR / "models" / "bert"
+
+# Путь к ONNX файлу
 ONNX_MODEL_PATH = MODEL_PATH / "model.onnx"
 ID2TEXT = {0: "не определено", 1: "негативная", 2: "нейтральная", 3: "позитивная"}
 
-# =========================
+
 # Создание FastAPI приложения
-# =========================
+
 app = FastAPI()
 
-# =========================
+
 # Инициализация базы данных и модели
-# =========================
+
 @app.on_event("startup")
 def on_startup():
     try:
@@ -53,15 +59,15 @@ def on_startup():
     except Exception as e:
         logging.exception(f"Ошибка инициализации при старте: {e}")
 
-# =========================
+
 # Схема данных запроса
-# =========================
-class TextRequest(BaseModel):
+
+class TextRequest(BaseModel): 
     text: str
 
-# =========================
+
 # Endpoint для предсказания через ONNX
-# =========================
+
 @app.post("/predict/")
 async def predict(request: TextRequest):
     logging.info(f"Received text for prediction: {request.text}")
@@ -109,15 +115,13 @@ async def predict(request: TextRequest):
 
     return {"predicted_class": predicted_class_text, "logits": predictions.tolist()}
 
-# =========================
 # Тестовые маршруты
-# =========================
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Emotion Classification API. Use /predict/ to classify text."}
 
-# =========================
 # Точка входа
-# =========================
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
