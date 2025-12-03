@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
 
-from database import Prediction, SessionLocal, init_db
+from backend.database import Prediction, SessionLocal, init_db
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
