@@ -1,8 +1,11 @@
-import pickle
 import logging
+import pickle
 
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-from .config import LR_MODEL_PATH, TFIDF_PATH, MODEL_PATH, MODEL_PATH_POSIX
+
+from .config import LR_MODEL_PATH, MODEL_PATH, MODEL_PATH_POSIX, TFIDF_PATH
+
+
 # Загрузка моделей
 def load_models():
     logging.info("Loading models...")

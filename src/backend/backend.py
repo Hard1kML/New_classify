@@ -1,6 +1,6 @@
 import logging
-import pickle 
-import os 
+import os
+import pickle
 
 import uvicorn
 from fastapi import FastAPI
@@ -13,8 +13,8 @@ from backend.database import Prediction, SessionLocal, init_db
 logging.basicConfig(level=logging.INFO)
 logging.info("Starting FastAPI application")
 # Константы для путей к моделям и меткам классов
-LR_MODEL_PATH = 'src/backend/models/lr_adv.pkl'  # получаем значение от 0 до 3
-TFIDF_PATH = 'src/backend/models/tf_idf_adv.pkl'  # получаем фичи(вектор)
+LR_MODEL_PATH = "src/backend/models/lr_adv.pkl"  # получаем значение от 0 до 3
+TFIDF_PATH = "src/backend/models/tf_idf_adv.pkl"  # получаем фичи(вектор)
 ID2TEXT = {0: "не определено", 1: "негативная", 2: "нейтральная", 3: "позитивная"}
 
 # Создание FastPI приложения
@@ -24,9 +24,8 @@ app = FastAPI()
 # Инициализация БД при старте
 @app.on_event("startup")
 def on_startup():
-    init_db() 
+    init_db()
     logging.info("Database initialized")
-
 
 
 # Загрузка моделей
@@ -77,6 +76,7 @@ async def root():
     return {
         "message": "Welcome to the Emotional Classification API. Use / predict / to classify text."
     }
+
 
 @app.get("hello")
 async def root():

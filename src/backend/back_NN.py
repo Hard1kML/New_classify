@@ -1,15 +1,16 @@
 import logging
-import sys, os
+import os
+import sys
 from pathlib import Path
+
 import torch
 import uvicorn
+from database import Prediction, SessionLocal, init_db
 from fastapi import FastAPI
 from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-from database import Prediction, SessionLocal, init_db 
 from utils import load_models, load_models_NN
-
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
@@ -25,6 +26,7 @@ ID2TEXT = {0: "не определено", 1: "негативная", 2: "ней
 # Создание FastAPI приложения
 app = FastAPI()
 
+
 # =========================
 # Инициализация базы данных и модели
 # =========================
@@ -38,11 +40,9 @@ def on_startup():
         app.state.tokenizer = tokenizer
         logging.info("Model and tokenizer attached to app state")
     except Exception as e:
-        logging.exception(f"Ошибка инициализации при старте: {e}")  # Логируем, но даем приложению стартовать для диагностики   
-
-
-
-
+        logging.exception(
+            f"Ошибка инициализации при старте: {e}"
+        )  # Логируем, но даем приложению стартовать для диагностики
 
 
 # =========================
@@ -65,12 +65,7 @@ async def predict(request: TextRequest):
     model = app.state.model
     tokenizer = app.state.tokenizer
 
-    features = tokenizer(
-        text,
-        truncation=True,
-        max_length=512,
-        return_tensors="pt"
-    )
+    features = tokenizer(text, truncation=True, max_length=512, return_tensors="pt")
 
     logging.info("Making prediction...")
     with torch.no_grad():
@@ -101,12 +96,16 @@ async def predict(request: TextRequest):
 # =========================
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the Emotion Classification API. Use /predict/ to classify text."}
+    return {
+        "message": "Welcome to the Emotion Classification API. Use /predict/ to classify text."
+    }
 
 
 @app.get("/hello")
 async def hello():
-    return {"message": "Hello, world! This is a simple FastAPI application for text classification."}
+    return {
+        "message": "Hello, world! This is a simple FastAPI application for text classification."
+    }
 
 
 @app.get("/v1/hello")

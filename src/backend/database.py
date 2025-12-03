@@ -1,9 +1,8 @@
 import os
-
 from datetime import datetime
-from sqlalchemy import DateTime, Integer, String, Column, create_engine
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
+
+from sqlalchemy import Column, DateTime, Integer, String, create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Используем переменную окружения database_url или дефолтное значение
 DATABASE_URL = os.environ.get(
