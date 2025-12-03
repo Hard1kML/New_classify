@@ -1,7 +1,8 @@
-import os 
-import streamlit as st 
-import requests
 import logging
+import os
+
+import requests
+import streamlit as st
 
 st.markdown(
     """
@@ -11,29 +12,31 @@ st.markdown(
     }
     </style>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
-# настройка логирования 
+# настройка логирования
 logging.basicConfig(level=logging.INFO)
-logging.info('запуск Streamlit приложения')
+logging.info("запуск Streamlit приложения")
 
-#Получаем url бэкенда из переменной окружения 
-BACKEND_URL = os.environ.get('BACKEND_URL', 'http://localhost:8000')
-logging.info(f'Используем url бэкенда: {BACKEND_URL}')
-st.markdown("<h1 style='color: black;'>Классификация текста</h1>", unsafe_allow_html=True)
-text=st.text_area('Введите текст для классификации:')
-if st.button('Классифицировать'):
-    if text.strip(): 
-        logging.info(f'Получен текст для классификации: {text}') 
-         # Отправка POST запроса к FastAPI серверу
-        logging.info(f'Отправка запроса на сервер...')
-        response=requests.post(f'{BACKEND_URL}/predict/', json={'text': text})
+# Получаем url бэкенда из переменной окружения
+BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000")
+logging.info(f"Используем url бэкенда: {BACKEND_URL}")
+st.markdown(
+    "<h1 style='color: black;'>Классификация текста</h1>", unsafe_allow_html=True
+)
+text = st.text_area("Введите текст для классификации:")
+if st.button("Классифицировать"):
+    if text.strip():
+        logging.info(f"Получен текст для классификации: {text}")
+        # Отправка POST запроса к FastAPI серверу
+        logging.info(f"Отправка запроса на сервер...")
+        response = requests.post(f"{BACKEND_URL}/predict/", json={"text": text})
         if response.ok:
-            logging.info('получен ответ от сервера')
-            result = response.json() 
+            logging.info("получен ответ от сервера")
+            result = response.json()
 
-            predicted_class = result.get('predicted_class', 'не определено')
+            predicted_class = result.get("predicted_class", "не определено")
 
             # Словарь цветов для эмоций — подкорректируй под свои классы
             colors = {
@@ -41,15 +44,18 @@ if st.button('Классифицировать'):
                 "негативный": "#FF4500",
                 "не определено": "#32CD32",
                 "мусор": "#808080",
-            } 
-            color = colors  .get(predicted_class.lower(), "#000000")
+            }
+            color = colors.get(predicted_class.lower(), "#000000")
 
-            st.markdown(f"### Результат: <span style='color:{color};'>{predicted_class.capitalize()}</span>",unsafe_allow_html=True) 
+            st.markdown(
+                f"### Результат: <span style='color:{color};'>{predicted_class.capitalize()}</span>",
+                unsafe_allow_html=True,
+            )
         else:
-            logging.error(f'Ошибка при обращении к серверу: {response.status_code}')
-            st.error('Ошибка при обращении к серверу.')
+            logging.error(f"Ошибка при обращении к серверу: {response.status_code}")
+            st.error("Ошибка при обращении к серверу.")
     else:
         st.markdown(
-    "<p style='color: black; background-color: #fff3cd; padding: 10px; border-radius: 5px;'>Пожалуйста, введите текст.</p>",
-    unsafe_allow_html=True
-)        
+            "<p style='color: black; background-color: #fff3cd; padding: 10px; border-radius: 5px;'>Пожалуйста, введите текст.</p>",
+            unsafe_allow_html=True,
+        )

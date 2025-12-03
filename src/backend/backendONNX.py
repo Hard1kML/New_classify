@@ -1,16 +1,16 @@
 import logging
-import sys, os
+import os
+import sys
 from pathlib import Path
+
+import onnxruntime as ort
 import torch
 import uvicorn
 from fastapi import FastAPI
-from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
 from transformers import AutoTokenizer
-import onnxruntime as ort
+
 from src.backend.database import Prediction, SessionLocal, init_db
-
-
 
 # Настройка логирования
 
@@ -39,6 +39,7 @@ app = FastAPI()
 
 # Инициализация базы данных и модели
 
+
 @app.on_event("startup")
 def on_startup():
     try:
@@ -58,15 +59,12 @@ def on_startup():
         logging.info("ONNX model and tokenizer attached to app state")
     except Exception as e:
         logging.exception(f"Ошибка инициализации при старте: {e}")
-
-
 # Схема данных запроса
-
-class TextRequest(BaseModel): 
+class TextRequest(BaseModel):
     text: str
 
-
 # Endpoint для предсказания через ONNX
+
 
 @app.post("/predict/")
 async def predict(request: TextRequest):
@@ -84,13 +82,13 @@ async def predict(request: TextRequest):
         truncation=True,
         max_length=128,
         padding="max_length",
-        return_tensors="np"  # ONNX Runtime работает с numpy
+        return_tensors="np",  # ONNX Runtime работает с numpy
     )
 
     # Приведение к int64
     inputs_onnx = {
         "input_ids": features["input_ids"].astype("int64"),
-        "attention_mask": features["attention_mask"].astype("int64")
+        "attention_mask": features["attention_mask"].astype("int64"),
     }
 
     # Предсказание через ONNX
@@ -115,11 +113,16 @@ async def predict(request: TextRequest):
 
     return {"predicted_class": predicted_class_text, "logits": predictions.tolist()}
 
+
 # Тестовые маршруты
+
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the Emotion Classification API. Use /predict/ to classify text."}
+    return {
+        "message": "Welcome to the Emotion Classification API. Use /predict/ to classify text."
+    }
+
 
 # Точка входа
 
